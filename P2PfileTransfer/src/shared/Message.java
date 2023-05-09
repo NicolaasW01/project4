@@ -9,6 +9,7 @@ public class Message implements Serializable {
     private String sender;
     private String recipient;
     private List<FileSearchResult> searchResults;
+    private String downloadKey;
 
     public Message(String messageType, String content, String sender, String recipient) {
         this.messageType = messageType;
@@ -23,6 +24,24 @@ public class Message implements Serializable {
         this.sender = sender;
         this.recipient = recipient;
         this.searchResults = searchResults;
+    }
+
+    // Add this constructor
+    public Message(String messageType, String content, String sender, String recipient, String downloadKey) {
+        this.messageType = messageType;
+        this.content = content;
+        this.sender = sender;
+        this.recipient = recipient;
+        this.downloadKey = downloadKey;
+    }
+
+    // Add the getter and setter methods for the downloadKey field
+    public String getDownloadKey() {
+        return downloadKey;
+    }
+
+    public void setDownloadKey(String downloadKey) {
+        this.downloadKey = downloadKey;
     }
 
     public String getMessageType() {

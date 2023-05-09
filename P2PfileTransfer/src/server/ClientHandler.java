@@ -31,11 +31,17 @@ public class ClientHandler implements Runnable {
             while (true) {
                 Message message = (Message) ois.readObject();
                 String messageType = message.getMessageType();
+                String targetClient = message.getRecipient();
 
                 if (messageType.equals("SEARCH")) {
-                    String query = message.getContent();
-                    List<FileSearchResult> searchResults = performSearch(query);
-                    oos.writeObject(new Message("SEARCH_RESULTS", null, "SERVER", clientId, searchResults));
+                    // Handle search requests here
+                } else if (messageType.equals("DOWNLOAD_REQUEST")) {
+                    ClientHandler targetClientHandler = Server.getClient(targetClient);
+                    if (targetClientHandler != null) {
+                        targetClientHandler.oos.writeObject(message);
+                    } else {
+                        oos.writeObject(new Message("ERROR", "Target client not found.", "SERVER", clientId));
+                    }
                 } else if (messageType.equals("DISCONNECT")) {
                     break;
                 }

@@ -25,16 +25,21 @@ public class Server {
                 Message message = (Message) ois.readObject();
                 String messageType = message.getMessageType();
                 String clientId = message.getSender();
-
-                if (messageType.equals("CONNECT")) {
+                //clinet trys to connect
+                while (messageType.equals("CONNECT")) {
                     if (connectedClients.containsKey(clientId)) {
                         oos.writeObject(new Message("ERROR", "Nickname already in use.", "SERVER", clientId));
+                        //ask new name
+                         message = (Message) ois.readObject();
+                         messageType = message.getMessageType();
+                         clientId = message.getSender();
                     } else {
                         ClientHandler clientHandler = new ClientHandler(socket, ois, oos, clientId);
                         connectedClients.put(clientId, clientHandler);
                         oos.writeObject(new Message("SUCCESS", "Connected to the server.", "SERVER", clientId));
                         new Thread(clientHandler).start();
                         System.out.println(clientId + " connected to the server!");
+                        break;
                     }
                 }
             }
@@ -46,5 +51,9 @@ public class Server {
     public static void removeClient(String clientId) {
         connectedClients.remove(clientId);
         System.out.println("Client '" + clientId + "' has left the server.");
+    }
+
+    public static ClientHandler getClient(String clientId) {
+        return connectedClients.get(clientId);
     }
 }
